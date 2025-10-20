@@ -56,6 +56,24 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+
+/* Boîte du popup */
+.popup-content {
+  border-radius: 16px;
+  padding: 20px;
+  width: 420px;         /* fixe */
+  max-width: 90vw;      /* responsive */
+  background-color: #222 !important;
+
+  display: flex !important; 
+  flex-direction: column !important;  /* ✅ empile les éléments du haut vers le bas */
+  align-items: center !important; /* centre horizontalement */
+  position: relative !important;
+  justify-content: center;
+}
+
+
+
 .header-item{
   position: static;
   display: flex;

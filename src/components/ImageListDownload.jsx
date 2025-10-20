@@ -1,18 +1,18 @@
-import { ImageCard } from "./ImageCard"
+import { ImageCardDownload } from "./ImageCardDownload"
 
-export function ImageListToAdd(props){
-    const { images } = props
+export function ImageListDownload(props){
+    const { imagesDownload } = props
 
     
     return (
         <div className="list-item">
         {/* On loop sur les images uploadé */}
-        { images.map((image, imageIndex)=>{
+        {imagesDownload?.map((image, imageIndex)=>{
             return (
                 // Pour chaque tache on crée ici une ImageCard
-                <ImageCard 
+                <ImageCardDownload 
                     // On lui donne ici un index unique key qui provient de la liste filtrée
-                    key={imageIndex} 
+                    key={image?.filename} 
 
                     // On lui donne toutes les props originales à ImageCard (Image, handleDeleteImage, ImageIndex, handleCompleteImage)
                     {...props}

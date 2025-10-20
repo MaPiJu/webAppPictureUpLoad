@@ -1,26 +1,7 @@
 export function InputTab(props) {
-    const { handleAddImage, images, setImages } = props
-    const RPI_UPLOAD_URL = "http://192.168.178.38:3000/upload"
-
-    async function sendFormData(images){
-
-        // Création du formData pour envoyer les photos
-        const formData = new FormData()
-        images.forEach((image)=>{
-            formData.append("photo",image)
-        })
-
-        // Début du post
-        try{
-            const res = await fetch(RPI_UPLOAD_URL, { method: "POST", body: formData })
-            const data = await res.json()
-            console.log("Réponse du serveur:", data)
-        } catch(err){
-            console.log(err.message)
-        }
-        
-    }
-
+    const { handleAddImage, images, imagesDownload ,handleDeleteImage, 
+        handleAllSelectDeselect, sendFormData, isUploading, downloadImages} = props
+    
     return (
         <div className="input-container">
             <input className="input-item" type='file'   accept="image/png, image/jpeg" multiple 
@@ -30,24 +11,31 @@ export function InputTab(props) {
             
             {/* Lorsque l'on clique sur le boutton ci-dessous, les images sélectionnées sont envoyées */}
             <button className="input-item" onClick={()=>sendFormData(images)} 
-            disabled={images.length === 0 ? true : false}>
+            disabled={images.length === 0 || isUploading ? true : false}>
                 Upload
             </button>
 
             {/* Lorsque l'on clique sur le boutton ci-dessous, les images sélectionnées sont supprimées */}
-            {/* CHANGER LA FONCTION ONCLICK */}
-            <button className="input-item" onClick={()=>sendFormData(images)} 
-            disabled={images.length === 0 ? true : false}>
+            <button className="input-item" onClick={()=>handleDeleteImage()} 
+            disabled={images.length === 0 || isUploading ? true : false}>
                 Delete
             </button>
 
 
             {/* Lorsque l'on clique sur le boutton ci-dessous, les images sélectionnées sont supprimées */}
-            {/* CHANGER LA FONCTION ONCLICK */}
-            <button className="input-item" onClick={()=>sendFormData(images)} 
-            disabled={images.length === 0 ? true : false}>
+            <button className="input-item" onClick={()=>handleAllSelectDeselect()} 
+            disabled={images.length === 0 || isUploading ? true : false}>
                 Select/Deselect All
             </button>
+
+            {/* Lorsque l'on clique sur le boutton ci-dessous, les images déjà uploadés sont montrées */}
+            <button className="input-item" onClick={()=>downloadImages()} 
+            disabled={isUploading}>
+                Show Uploaded Pictures
+            </button>
+
+
+
         </div>
     )
 }

@@ -1,6 +1,6 @@
 export function ImageCard(props){
 
-    const { toggleChecked, image, imageIndex } = props
+    const { toggleChecked, image } = props
 
     return(
     <div className="card-item"> 
