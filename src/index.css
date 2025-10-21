@@ -73,7 +73,6 @@ button:focus-visible {
 }
 
 
-
 .header-item{
   position: static;
   display: flex;
@@ -81,8 +80,8 @@ button:focus-visible {
   width: 100%;
   top: 0;
   z-index: 1000;
-  padding: 1rem;
-  /* border: 1px solid #f9f9f9; ✅ épaisseur + style + couleur */
+  margin: 0.5rem;
+  /* border: 1px solid #f9f9f9;  */
 }
 
 .input-container{
@@ -93,8 +92,15 @@ button:focus-visible {
 }
 
 .list-item {
+  min-height: 210px;  
+  margin: 0.5rem;
+
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
+
+  border-radius: 8px;
+  border: 1px solid #323c71;
 }
 
 .card-item {
@@ -113,11 +119,11 @@ button:focus-visible {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 1000;  
+
 }
 
 .input-item{
-  margin-left: 1rem;
+  margin: 0rem 0.5rem;
 }
 
 @media (prefers-color-scheme: light) {

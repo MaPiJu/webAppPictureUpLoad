@@ -1,15 +1,13 @@
 export function ImageCard(props){
 
-    const { toggleChecked, image } = props
+    const { toggleImage, image } = props
 
     return(
     <div className="card-item"> 
-          <input className="checkbox-item" type="checkbox" checked={image.checked} onChange={() => toggleChecked(image.id)}/>
-          <img className='img' src={URL.createObjectURL(image.input)} alt={`${image.input.name}-large-img`} />
+          <input className="checkbox-item" type="checkbox" checked={image.checked} onChange={() => toggleImage(image.id)}/>
+          <img className='img' src={image.input ? URL.createObjectURL(image.input) : image.url} alt={image.filename || 'Image'} />
     </div>
     )
-
-
 }
 
 

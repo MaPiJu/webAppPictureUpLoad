@@ -7,7 +7,7 @@ export function ImageListToAdd(props){
     return (
         <div className="list-item">
         {/* On loop sur les images uploadé */}
-        { images.map((image, imageIndex)=>{
+        { images?.map((image, imageIndex)=>{
             return (
                 // Pour chaque tache on crée ici une ImageCard
                 <ImageCard 
