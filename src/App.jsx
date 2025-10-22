@@ -12,8 +12,14 @@ function App() {
 // Constante pour définir où l'on poste nos images
 const RPI_UPLOAD_URL = "http://localhost:3000/upload"
 
-// Constante pour définir où l'on télécharge nos images
-const RPI_DOWNLOAD_URL = "http://localhost:3000/images"
+// Constante pour définir où l'on récupère nos images
+const RPI_SHOW_URL = "http://localhost:3000/images"
+
+// Constante pour définir où l'on télécharge une image
+const RPI_DOWNLOAD_URL = "http://localhost:3000/download"
+
+// Constante pour définir où l'on télécharge plusieurs
+const RPI_DOWNLOADS_URL = "http://localhost:3000/downloads"
 
 // Liste des images à uplaoder
 const {
@@ -102,12 +108,11 @@ async function getImagesFromServer(){
 
   try {
     // signal -> sert au timer
-    const res = await fetch(RPI_DOWNLOAD_URL, {signal: controller.signal })
+    const res = await fetch(RPI_SHOW_URL, {signal: controller.signal })
 
     // Essaie de lire la réponse (même en erreur), mais sans casser si ce n'est pas du JSON
     let data = null
     try { data = await res.json() } catch { /* pas de JSON */ }
-    console.log("Réponse du serveur:", data ?? res.statusText)
 
     // Teste à la fois le statut HTTP et le champ ok du JSON.
     if (res.ok && data?.ok) {
@@ -120,8 +125,6 @@ async function getImagesFromServer(){
             filename: img.filename,
           }))
       setImagesFromServer(normalized || [])
-      setPopupMessage(`✅ Succès, images du serveur récupérées : ${res.status}`)
-      setShowPopup(true)
     } 
      else {
       setPopupMessage(`❌ Erreur HTTP ${res.status}`)
@@ -143,19 +146,55 @@ async function getImagesFromServer(){
 
 
 // Fonction qui télécharge sur l'ordinateur les photos du serveur:
-function downloadImagesFromServer(){
+async function downloadImagesFromServer(){
+
   const toDownload = imagesFromServer.filter(img => img.checked)
+
+  // On a aucune image à télécharger
   if (toDownload.length === 0) return
 
-  toDownload.forEach(image => {
-    var a = document.createElement('a')
-    a.href = image.url
-    console.log(image)
-    a.download = image.id
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-  })
+  // On a qu'une seule image à télécharger
+  if (toDownload.length === 1){
+
+    const image = toDownload[0]
+    const downloadURL = `${RPI_DOWNLOAD_URL}?file=${image.filename}`
+    const resOne = await fetch(downloadURL)
+
+    if (resOne.ok){
+      var a = document.createElement('a')
+      a.href = downloadURL
+      a.download = image.id
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)}
+    
+  }
+  // On a plusieurs images à télécharger
+  else {
+    const listToSend = toDownload.map(elt => elt.filename)
+    const jsonList = {files: listToSend}
+
+    const resMultiple = await fetch(
+      RPI_DOWNLOADS_URL, 
+      { headers: {"Content-Type": "application/json"}, method: "POST", body: JSON.stringify(jsonList)})
+    
+    let zipBlob = null
+    try { zipBlob = await resMultiple.blob() } catch { /* pas de BLOB */ }
+    
+    if (resMultiple.ok){
+      const url = window.URL.createObjectURL(zipBlob)
+      const zipDownload = document.createElement("a")
+
+      zipDownload.href = url
+      zipDownload.download = `images-download-${Date.now()}.zip`
+      document.body.appendChild(zipDownload)
+      zipDownload.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(zipDownload)
+
+    }
+
+  }
 }
 
 
