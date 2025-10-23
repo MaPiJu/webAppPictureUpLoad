@@ -1,6 +1,6 @@
 export function InputTab(props) {
-    const { handleAddImage, imagesToUpload, imagesFromServer ,handleDeleteImage, 
-        handleAllSelectDeselect, sendFormData, isUploading} = props
+    const { handleAddImage, imagesToUpload ,handleDeleteImage, 
+        handleAllSelectDeselect, sendFormData, isUploading, slideShowFunction} = props
 
 
     
@@ -18,7 +18,7 @@ export function InputTab(props) {
             </button>
 
             {/* Lorsque l'on clique sur le boutton ci-dessous, les images sélectionnées sont supprimées */}
-            <button className="input-item" onClick={()=>handleDeleteImage(imagesToUpload)} 
+            <button className="input-item" onClick={()=>handleDeleteImage()} 
             disabled={imagesToUpload.length === 0 || isUploading ? true : false}>
                 Delete
             </button>
@@ -29,6 +29,13 @@ export function InputTab(props) {
             disabled={imagesToUpload.length === 0 || isUploading ? true : false}>
                 Select/Deselect All
             </button>
+
+            {/* Lorsque l'on clique sur le boutton ci-dessous, les images sélectionnées apparaissent en Popup */}
+            <button className="input-item" onClick={()=>slideShowFunction(imagesToUpload)} 
+            disabled={imagesToUpload.length === 0 || isUploading ? true : false}>
+                Slide Show
+            </button>
+
         </div>
     )
 }

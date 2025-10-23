@@ -6,7 +6,7 @@ export default function useImageListManager(initialImages = []) {
   const [images, setImages] = useState(initialImages || [])
 
     // Ajout d'une nouvelle image
-    const addImages = (newImages) => {
+  const addImages = (newImages) => {
         const toAdd = newImages.map(f => ({
             input: f,
             checked: true,

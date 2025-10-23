@@ -1,19 +1,19 @@
 export function ServerButtonsTab(props) {
     const { imagesFromServer, hideImages, deleteImages, handleAllSelectDeselect, isUploading, getImagesFromServer,
-        downloadImagesFromServer } = props
+        downloadImagesFromServer, slideShowFunction } = props
     
     return (
         <div className="input-container">
 
             
-            {/* Lorsque l'on clique sur le boutton ci-dessous, les images sélectionnées sont téléchatgées */}
+            {/* Lorsque l'on clique sur le boutton ci-dessous, les images sélectionnées sont téléchargées */}
             <button className="input-item" onClick={()=>downloadImagesFromServer(imagesFromServer)} 
             disabled={imagesFromServer.length === 0 || isUploading ? true : false}>
                 Download
             </button>
 
             {/* Lorsque l'on clique sur le boutton ci-dessous, les images sélectionnées sont supprimées */}
-            <button className="input-item" onClick={()=>deleteImages(imagesFromServer)} 
+            <button className="input-item" onClick={()=>deleteImages()} 
             disabled={imagesFromServer.length === 0 || isUploading ? true : false}>
                 Delete
             </button>
@@ -37,6 +37,11 @@ export function ServerButtonsTab(props) {
                 Show Uploaded Pictures
             </button>
 
+            {/* Lorsque l'on clique sur le boutton ci-dessous, les images sélectionnées apparaissent en Popup */}
+            <button className="input-item" onClick={()=>slideShowFunction(imagesFromServer)} 
+            disabled={imagesFromServer.length === 0 || isUploading ? true : false}>
+                Slide Show
+            </button>
 
 
         </div>

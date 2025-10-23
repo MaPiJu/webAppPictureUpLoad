@@ -5,6 +5,7 @@ import { ImageListToAdd } from "./components/ImageListToAdd"
 import { UploadPopup } from './components/UploadPopup'
 import { ServerButtonsTab } from './components/ServerButtonsTab'
 import useImageListManager from './functions/useImageListManager'
+import { SlideShowPopup } from './components/SlideShowPopup'
 
 // QUAND CECI DISPARAIT ALORS IL Y ICI TOUT CE QU IL FALLAIT POUR FONCTIONNER
 
@@ -45,12 +46,26 @@ const {
 // Check si on est en upload
 const [isUploading, setIsUploading] = useState(false)
 
-// Check si on a un popup
-const [showPopup, setShowPopup] = useState(false)
+// Check si on a un popup pour l'Upload
+const [showUploadPopup, setShowUploadPopup] = useState(false)
 
-// Message du popup
+// Message du popup pour l'Upload
 const [popupMessage, setPopupMessage] = useState("")
 
+// Check si on a un popup pour le Slide Show
+const [showSlidePopup, setShowSlidePopup] = useState(false)
+
+// Liste d'images du popup pour le Slide Show
+const [popupSlideImages, setPopupSlideImages] = useState([])
+
+
+// Fonction pour le bouton show slide
+function slideShowFunction(img){
+  const imagesToSlide = img.filter(img => img.checked === true)
+  if (imagesToSlide.length === 0) return
+  setPopupSlideImages(imagesToSlide)
+  setShowSlidePopup(true)
+}
 
 
 // Fonction asynchrone afin de poster les images
@@ -80,11 +95,11 @@ async function sendFormData() {
       // ⚠️ Ici on enlève du state celles qui ont été envoyées (les cochées)
       setImagesToUpload(prev => prev.filter(img => !img.checked))
       setPopupMessage(`✅ Succès : ${res.status}`)
-      setShowPopup(true)
+      setShowUploadPopup(true)
     } 
      else {
       setPopupMessage(`❌ Erreur HTTP ${res.status}`)
-      setShowPopup(true)
+      setShowUploadPopup(true)
     }
 
   } catch (err) {
@@ -93,7 +108,7 @@ async function sendFormData() {
     } else {
     setPopupMessage(`⚠️ Erreur réseau : ${err.message}`)
     }
-    setShowPopup(true)
+    setShowUploadPopup(true)
   } finally {
     clearTimeout(timeout)
     setIsUploading(false)
@@ -128,7 +143,7 @@ async function getImagesFromServer(){
     } 
      else {
       setPopupMessage(`❌ Erreur HTTP ${res.status}`)
-      setShowPopup(true)
+      setShowUploadPopup(true)
     }
 
   } catch (err) {
@@ -137,7 +152,7 @@ async function getImagesFromServer(){
     } else {
     setPopupMessage(`⚠️ Erreur réseau : ${err.message}`)
     }
-    setShowPopup(true)
+    setShowUploadPopup(true)
   } finally {
     clearTimeout(timeout)
     setIsUploading(false)
@@ -212,7 +227,7 @@ async function delImagesFromServer() {
       )
     )
     setPopupMessage(`🗑️ Images supprimées (${toDelete.length})`)
-    setShowPopup(true)
+    setShowUploadPopup(true)
 
     // Mets à jour l'état local
     const remaining = imagesFromServer.filter(img => !img.checked)
@@ -220,7 +235,7 @@ async function delImagesFromServer() {
   } catch (err) {
     console.error('Erreur de suppression:', err)
     setPopupMessage('❌ Échec de suppression')
-    setShowPopup(true)
+    setShowUploadPopup(true)
   }
 }
 
@@ -228,15 +243,17 @@ async function delImagesFromServer() {
   return (  
     <>
       <Header/>
-      <InputTab handleAddImage={addImagesToUpload} imagesToUpload = {imagesToUpload} imagesFromServer = {imagesFromServer} handleDeleteImage = {deleteUploadImages}
-      handleAllSelectDeselect = {handleAllSelectDeselectUploadImages} sendFormData = {sendFormData} isUploading = {isUploading}/>
+      <InputTab handleAddImage={addImagesToUpload} imagesToUpload = {imagesToUpload}  handleDeleteImage = {deleteUploadImages}
+      handleAllSelectDeselect = {handleAllSelectDeselectUploadImages} sendFormData = {sendFormData} isUploading = {isUploading}
+      slideShowFunction = {slideShowFunction}/>
       <ImageListToAdd images={imagesToUpload} toggleImage={toggleUploadImage} setImagesToUpload = { setImagesToUpload }/>
       <h1 className="header-item text-gradient"> Pictures in the server </h1>
       <ServerButtonsTab imagesFromServer = {imagesFromServer} hideImages = {hideFromServer} deleteImages = {delImagesFromServer}
       handleAllSelectDeselect = {handleAllSelectDeselectFromServer} isUploading = {isUploading} getImagesFromServer = {getImagesFromServer}
-      downloadImagesFromServer = {downloadImagesFromServer}/>
+      downloadImagesFromServer = {downloadImagesFromServer} slideShowFunction = {slideShowFunction}/>
       <ImageListToAdd images={imagesFromServer} toggleImage={toggleFromServer} setImages={setImagesFromServer} />
-      <UploadPopup showPopup = {showPopup} setShowPopup = {setShowPopup} popupMessage = {popupMessage}/>
+      <UploadPopup showUploadPopup = {showUploadPopup} setShowUploadPopup = {setShowUploadPopup} popupMessage = {popupMessage}/>
+      <SlideShowPopup showSlidePopup = {showSlidePopup} setShowSlidePopup = {setShowSlidePopup} popupSlideImages = {popupSlideImages}/>
     </>
   )
 }
