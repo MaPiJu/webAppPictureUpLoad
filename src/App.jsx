@@ -12,7 +12,7 @@ import { SlideShowPopup } from './components/SlideShowPopup'
 function App() {
 // Remplacer localhost par http://clernstpi.local:3000/ quand on utilise raspberry
 const isRaspberry = true
-const rasp = "clernstpi.local"
+const rasp = "192.168.178.114"
 const pc = "localhost"
 
 let domainName = isRaspberry ? rasp : pc
