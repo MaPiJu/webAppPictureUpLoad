@@ -1,30 +1,33 @@
 import { useState } from 'react';
 
-export default function useImageListManager(initialImages = []) {
+// Fallback UUID generator si crypto.randomUUID() est indisponible
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
 
-    // Création du UseState pour les images
+export default function useImageListManager(initialImages = []) {
   const [images, setImages] = useState(initialImages || [])
 
-    // Ajout d'une nouvelle image
   const addImages = (newImages) => {
-        const toAdd = newImages.map(f => ({
-            input: f,
-            checked: true,
-            id: crypto.randomUUID(),
-        }))
+    const toAdd = newImages.map(f => ({
+      input: f,
+      checked: true,
+      id: (typeof crypto?.randomUUID === 'function' ? crypto.randomUUID() : generateUUID()),
+    }));
     setImages(prev => [...prev, ...toAdd])
-      console.log("Ho")
-      console.log(images)
+    console.log("Ho")
+    console.log(images)
   }
 
-
-    // Supprime les images qui sont cochées
   const deleteChecked = () => {
     let newImages = images.filter((img) => img.checked === false)
     setImages(newImages)
   }
 
-    // Sélectionne ou déselectionne toutes les images
   const handleAllSelectDeselect = () => {
     let filteredImage = images.filter((img) => img.checked === false)
     let allSame = filteredImage.length === 0 || filteredImage.length === images.length
@@ -33,14 +36,10 @@ export default function useImageListManager(initialImages = []) {
     setImages(newImages)
   }
 
-    // Permet de sélectionner les images
   const toggleImage = (id) => {
     setImages(prevImages =>
-    // Avec .map on crée une nouvelle liste d'images, où l'image choisie via l'ID en entrée voit sont checked inversé
-    // ici le tableau retourné est le même avec l'image du ID en entrée qui voit son checked modifié "{ ...img, checked: !img.checked }"
-    // si l'image mappée ne correspond pas à l'id on le laisse inchangé -> ": img"
-    prevImages.map(img => img.id === id ? { ...img, checked: !img.checked } : img)
-  )
+      prevImages.map(img => img.id === id ? { ...img, checked: !img.checked } : img)
+    )
   }
 
   return {
