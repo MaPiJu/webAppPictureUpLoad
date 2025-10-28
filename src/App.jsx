@@ -10,17 +10,24 @@ import { SlideShowPopup } from './components/SlideShowPopup'
 // QUAND CECI DISPARAIT ALORS IL Y ICI TOUT CE QU IL FALLAIT POUR FONCTIONNER
 
 function App() {
+// Remplacer localhost par http://clernstpi.local:3000/ quand on utilise raspberry
+const isRaspberry = true
+const rasp = "clernstpi.local"
+const pc = "localhost"
+
+let domainName = isRaspberry ? rasp : pc
+
 // Constante pour définir où l'on poste nos images
-const RPI_UPLOAD_URL = "http://localhost:3000/upload"
+const RPI_UPLOAD_URL = `http://${domainName}:3000/upload`
 
 // Constante pour définir où l'on récupère nos images
-const RPI_SHOW_URL = "http://localhost:3000/images"
+const RPI_SHOW_URL = `http://${domainName}:3000/images`
 
 // Constante pour définir où l'on télécharge une image
-const RPI_DOWNLOAD_URL = "http://localhost:3000/download"
+const RPI_DOWNLOAD_URL = `http://${domainName}:3000/download`
 
 // Constante pour définir où l'on télécharge plusieurs
-const RPI_DOWNLOADS_URL = "http://localhost:3000/downloads"
+const RPI_DOWNLOADS_URL = `http://${domainName}:3000/downloads`
 
 // Liste des images à uplaoder
 const {
@@ -127,8 +134,8 @@ async function getImagesFromServer(){
 
     // Essaie de lire la réponse (même en erreur), mais sans casser si ce n'est pas du JSON
     let data = null
-    try { data = await res.json() } catch { /* pas de JSON */ }
-
+    try { data = await res.json() } catch { console.log(res) }
+    
     // Teste à la fois le statut HTTP et le champ ok du JSON.
     if (res.ok && data?.ok) {
       // Sauvegarde nos photos récupérées
@@ -136,7 +143,7 @@ async function getImagesFromServer(){
             input: null,
             checked: true,
             id: img.filename,
-            url: `http://localhost:3000${img.url}`,
+            url: `http://${domainName}:3000${img.url}`,
             filename: img.filename,
           }))
       setImagesFromServer(normalized || [])
@@ -223,7 +230,7 @@ async function delImagesFromServer() {
     // soient toutes terminées avant de continuer
     await Promise.all(
       toDelete.map(img =>
-        fetch(`http://localhost:3000/images/${img.filename}`, { method: 'DELETE' })
+        fetch(`http://${domainName}:3000/images/${img.filename}`, { method: 'DELETE' })
       )
     )
     setPopupMessage(`🗑️ Images supprimées (${toDelete.length})`)
